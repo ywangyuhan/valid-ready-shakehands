@@ -1,0 +1,26 @@
+module top(input clk,
+           input rst_n,
+           input en,
+           input[31:0] data)
+
+   wire[31:0] sdata;
+   wire[31:0] dout;
+   wire       valid;
+   wire       ready;
+
+   sender(.clk(clk),
+          .rst_n(rst_n),
+          .data(data),
+          .ready(ready),
+          .en(en),
+          .valid(valid),
+          .sdata(sdata));
+
+   receiver(.clk(clk),
+            .rst_n(rst_n),
+            .sdata(sdata),
+            .valid(valid),
+            .ready(ready),
+            .dout(dout));
+
+endmodule

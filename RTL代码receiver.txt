@@ -1,0 +1,41 @@
+module receiver(input clk,
+                input rst_n,
+                input[31:0] sdata,
+                input valid,
+                output reg ready,
+                output reg[31:0] dout);
+
+   reg valid1;
+   reg valid2;
+   reg valid3;
+   always@(posedge clk or negedge rst_n)
+      begin
+         if(!rst_n) begin
+            valid1<=1'b0;
+            valid2<=1'b0;
+            valid3<=1'b0;
+         end
+         else begin
+            valid1<=valid;
+            valid2<=valid1;
+            valid3<=valid2;
+         end
+      end
+
+   wire pulse_valid;
+   assign pulse_valid=valid2&&(~valid3);
+
+   always@(posedge clk or negedge rst_n)
+      begin
+         if(!rst_n)           ready<=1'b0;
+         else if(pulse_valid) ready<=1'b1;
+         else                 ready<=1'b0;
+      end
+
+   always@(posedge clk or negedge rst_n)
+      begin
+         if(!rst_n)           dout<='d0;
+         else if(pulse_valid) dout<=sdata;
+      end
+
+endmodule
